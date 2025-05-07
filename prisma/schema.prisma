@@ -1,0 +1,128 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                String    @id @default(uuid())
+  name              String
+  email             String    @unique
+  password          String
+  passwordChangedAt DateTime?
+  image             String?
+  role              Role      @default(MEMBER)
+  isActive          Boolean   @default(true)
+  ideas             Idea[]
+  votes             Vote[]
+  comments          Comment[]
+  payments          Payment[]
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  @@map("users")
+}
+
+model Category {
+  id        String   @id @default(uuid())
+  name      String   @unique
+  ideas     Idea[]
+  createdAt DateTime @default(now())
+
+  @@map("categories")
+}
+
+model Idea {
+  id               String     @id @default(uuid())
+  title            String
+  problemStatement String?
+  solution         String?
+  description      String?
+  images           String[] // Use array of image URLs
+  isPaid           Boolean    @default(false)
+  price            Float? // Only needed if isPaid = true
+  status           IdeaStatus @default(DRAFT)
+  feedback         String? // Rejection reason
+  categoryId       String?
+  authorId         String
+  // isSubmitted      Boolean    @default(false)
+  isDeleted        Boolean    @default(false)
+  category         Category?  @relation(fields: [categoryId], references: [id])
+  author           User       @relation(fields: [authorId], references: [id])
+  votes            Vote[]
+  comments         Comment[]
+  payments         Payment[]
+  createdAt        DateTime   @default(now())
+  updatedAt        DateTime   @updatedAt
+
+  @@map("ideas")
+}
+
+model Vote {
+  id        String   @id @default(uuid())
+  userEmail String
+  ideaId    String
+  type      VoteType
+  user      User     @relation(fields: [userEmail], references: [email])
+  idea      Idea     @relation(fields: [ideaId], references: [id])
+
+  @@unique([userEmail, ideaId]) // One vote per user per idea
+  @@map("votes")
+}
+
+model Comment {
+  id        String    @id @default(uuid())
+  content   String
+  ideaId    String
+  userId    String
+  parentId  String? // For nested replies
+  idea      Idea      @relation(fields: [ideaId], references: [id])
+  user      User      @relation(fields: [userId], references: [id])
+  parent    Comment?  @relation("CommentReplies", fields: [parentId], references: [id])
+  replies   Comment[] @relation("CommentReplies")
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@map("comments")
+}
+
+model Payment {
+  id              String        @id @default(uuid())
+  userEmail       String
+  ideaId          String
+  user            User          @relation(fields: [userEmail], references: [email])
+  idea            Idea          @relation(fields: [ideaId], references: [id])
+  amount          Float
+  status          PaymentStatus @default(Pending)
+  transactionId   String        @unique
+  gatewayResponse Json?
+  createdAt       DateTime      @default(now())
+
+  @@map("payments")
+}
+
+enum VoteType {
+  UP
+  DOWN
+}
+
+enum IdeaStatus {
+  DRAFT
+  UNDER_REVIEW
+  APPROVED
+  REJECTED
+}
+
+enum Role {
+  MEMBER
+  ADMIN
+}
+
+enum PaymentStatus {
+  Pending
+  Paid
+  Failed
+}
