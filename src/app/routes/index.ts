@@ -4,6 +4,7 @@ import { AuthRouter } from "../modules/Auth/auth.route";
 import CategoryRoute from "../modules/Category/category.route";
 import IdeaRoute from "../modules/Idea/idea.route";
 import CommentsRoutes from "../modules/Comments/comments.route";
+import { voteRoutes } from "../modules/Vote/vote.route";
 
 const router = Router();
 
@@ -27,6 +28,10 @@ const moduleRoutes = [
   {
     path: '/comment',
     route: CommentsRoutes
+  },
+  {
+    path: '/vote',
+    route: voteRoutes
   }
 ];
 
