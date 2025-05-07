@@ -17,20 +17,17 @@ router.post(
 router.delete(
   '/:ideaId',
   auth(Role.ADMIN, Role.MEMBER),
-  validateRequest(VoteValidation.deleteVoteValidationSchema),
   voteController.removeVote
 );
 
 router.get(
   '/stats/:ideaId',
-  validateRequest(VoteValidation.getVoteStatsValidationSchema),
   voteController.getVoteStats
 );
 
 router.get(
   '/:ideaId',
   auth(Role.ADMIN, Role.MEMBER),
-  validateRequest(VoteValidation.getVoteStatsValidationSchema),
   voteController.getUserVote
 );
 
