@@ -56,21 +56,6 @@ const getPaymentDetails = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-// // change Payment Status
-// const changePaymentStatus = catchAsync(async (req: Request, res: Response) => {
-//   const { status } = req.body;
-//   const result = await PaymentService.changePaymentStatusInDB(
-//     req.params.paymentId,
-//     status,
-//     req.user
-//   );
-
-//   sendResponse(res, {
-//     statusCode: httpStatus.OK,
-//     message: 'Payment status changed succesfully!',
-//     data: result,
-//   });
-// });
 
 // validate Payment
 const validatePayment = catchAsync(async (req: Request, res: Response) => {
