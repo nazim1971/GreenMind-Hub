@@ -1,14 +1,15 @@
-import { Request, Response } from 'express';
+
 import { paymentService } from './payment.service';
-import catchAsync from '../../utils/catchAsync';
-import sendResponse from '../../utils/sendResponse';
-import { httpStatus } from '../../utils/httpStatus';
+import { catchAsync } from '../../shared/catchAsync';
+import { sendResponse } from '../../shared/sendResponse';
+import { httpStatus } from '../../interfaces/httpStatus';
 
 // create Payment
-const createPayment = catchAsync(async (req: Request, res: Response) => {
+const createPayment = catchAsync(async (req, res) => {
   const result = await paymentService.createPaymentIntoDB(req.body, req.user);
 
   sendResponse(res, {
+    success: true,
     statusCode: httpStatus.CREATED,
     message: 'Payment initiated, pay quickly!',
     data: result,
@@ -16,25 +17,40 @@ const createPayment = catchAsync(async (req: Request, res: Response) => {
 });
 
 // get All Payments (admin)
-const getAllPayments = async (req: Request, res: Response) => {
-  const result = await paymentService.getAllPaymentsFromDB(req.query);
+// const getAllPayments = async (req, res) => {
+//   const result = await paymentService.getAllPaymentsFromDB(req.query);
 
-  sendResponse(res, {
-    statusCode: httpStatus.OK,
-    message: 'Payments retrived succesfully!',
-    data: result.data,
-    meta: result.meta,
+//   sendResponse(res, {
+//     success: true,
+//     statusCode: httpStatus.OK,
+//     message: 'Payments retrived succesfully!',
+//     data: result.data,
+//     meta: result.meta,
+//   });
+// };
+
+const getAllPayments = catchAsync(async (req, res) => {
+    const result = await paymentService.getAllPaymentsFromDB(req.query);
+  
+    sendResponse(res, {
+      success: true,
+      statusCode: httpStatus.OK,
+      message: 'Payments retrieved successfully!',
+      data: result.data,
+      meta: result.meta,
+    });
   });
-};
+  
 
 // getMemberPayments
-const getMemberPayments = catchAsync(async (req: Request, res: Response) => {
+const getMemberPayments = catchAsync(async (req, res) => {
   const result = await paymentService.getMemberPaymentsFromDB(
     req.query,
     req.user
   );
 
   sendResponse(res, {
+    success: true,
     statusCode: httpStatus.OK,
     message: 'Payments retrived succesfully!',
     data: result.data,
@@ -43,13 +59,14 @@ const getMemberPayments = catchAsync(async (req: Request, res: Response) => {
 });
 
 // get Payment Details
-const getPaymentDetails = catchAsync(async (req: Request, res: Response) => {
+const getPaymentDetails = catchAsync(async (req, res) => {
   const result = await paymentService.getPaymentDetailsFromDB(
     req.params.paymentId,
     req.user
   );
 
   sendResponse(res, {
+    success: true,
     statusCode: httpStatus.OK,
     message: 'Payment retrived succesfully!',
     data: result,
@@ -58,11 +75,12 @@ const getPaymentDetails = catchAsync(async (req: Request, res: Response) => {
 
 
 // validate Payment
-const validatePayment = catchAsync(async (req: Request, res: Response) => {
+const validatePayment = catchAsync(async (req, res) => {
   const transactionId = req.query.tran_id as string;
   const result = await paymentService.validatePayment(transactionId, req.user);
 
   sendResponse(res, {
+    success: true,
     statusCode: httpStatus.OK,
     message: 'Payment validated succesfully!',
     data: result,

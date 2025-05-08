@@ -1,9 +1,9 @@
 import { Router } from 'express';
 import { paymentController } from './payment.controller';
-import { paymentValidation } from './payment.validation';
-import validateRequest from '../../middlewares/validateRequest';
-import { auth } from '../../middlewares/auth';
 import { Role } from '@prisma/client';
+import auth from '../../../middlewires/auth';
+import validateRequest from '../../../middlewires/validateRequest';
+import { PaymentValidation } from './payment.validation';
 
 const router = Router();
 
@@ -34,7 +34,7 @@ router.get(
 router.patch(
   '/validate',
   auth(Role.MEMBER, Role.ADMIN),
-  validateRequest(paymentValidation.validatePayment),
+  validateRequest(PaymentValidation.validatePayment),
   paymentController.validatePayment
 );
 

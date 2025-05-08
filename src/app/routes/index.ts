@@ -5,6 +5,7 @@ import CategoryRoute from "../modules/Category/category.route";
 import IdeaRoute from "../modules/Idea/idea.route";
 import CommentsRoutes from "../modules/Comments/comments.route";
 import { voteRoutes } from "../modules/Vote/vote.route";
+import { paymentRoutes } from "../modules/Payment/payment.route";
 
 const router = Router();
 
@@ -32,7 +33,11 @@ const moduleRoutes = [
   {
     path: '/vote',
     route: voteRoutes
-  }
+  },
+  {
+    path: '/payments',
+    route: paymentRoutes,
+  },
 ];
 
 moduleRoutes.forEach((route) => router.use(route.path, route.route));
