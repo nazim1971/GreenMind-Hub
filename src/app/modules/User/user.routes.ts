@@ -23,12 +23,12 @@ router.patch(
 
 router.get("/me", auth(Role.ADMIN, Role.MEMBER), userController.getMyProfile);
 
-router.get("/users", auth(Role.ADMIN), userController.getAllUsers);
+router.get("/", auth(Role.ADMIN), userController.getAllUsers);
 
-router.get("/user/:id", auth(Role.ADMIN), userController.getSingleUser);
+router.get("/:id", auth(Role.ADMIN), userController.getSingleUser);
 
 router.patch(
-  "/user/:id/status",
+  "/:id/status",
   auth(Role.ADMIN),
   validateRequest(userValidation.updateUserStatusSchema),
   userController.updateUserActiveStatus
