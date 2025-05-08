@@ -1,130 +1,146 @@
+/* eslint-disable no-console */
+import SSLCommerzPayment from 'sslcommerz-lts';
+import config from '../../config';
+import { JwtPayload } from 'jsonwebtoken';
+import { PaymentStatus } from '@prisma/client';
+import { StatusFullError } from '../../error/StatusFullError';
+import { httpStatus } from '../../interfaces/httpStatus';
+import prisma from '../../shared/prisma';
 
-// import SSLCommerzPayment from 'sslcommerz-lts';
+const generateTransactionId = (): string => {
+  const timestamp = Date.now().toString().slice(-6);
+  const randomString = Math.random().toString(36).substring(2, 12);
+  return `${timestamp}-${randomString}`;
+};
 
-// import { PaymentStatus } from '@prisma/client';
+const store_id = config.ssl.store_id as string;
+const store_password = config.ssl.store_password as string;
+const is_live = false; // true for live, false for sandbox
 
-// const generateTransactionId = (): string => {
-//   const timestamp = Date.now().toString().slice(-6);
-//   const randomString = Math.random().toString(36).substring(2, 12);
-//   return `${timestamp}-${randomString}`;
-// };
+// SSLCommerz init
+const initializaPayment = async (total_amount: number, tran_id: string) => {
+  const data = {
+    total_amount,
+    currency: 'BDT',
+    tran_id, // Use unique tran_id for each API call
+    success_url: `${config.ssl.validation_url}?tran_id=${tran_id}`,
+    fail_url: config.ssl.fail_url as string,
+    cancel_url: config.ssl.cancel_url as string,
+    ipn_url: 'http://localhost:5000/api/ssl/ipn',
+    shipping_method: 'Courier',
+    product_name: 'N/A.',
+    product_category: 'N/A',
+    product_profile: 'general',
+    cus_name: 'N/A',
+    cus_email: 'N/A',
+    cus_add1: 'Dhaka',
+    cus_add2: 'Dhaka',
+    cus_city: 'Dhaka',
+    cus_state: 'Dhaka',
+    cus_postcode: '1000',
+    cus_country: 'Bangladesh',
+    cus_phone: '01711111111',
+    cus_fax: '01711111111',
+    ship_name: 'N/A',
+    ship_add1: 'Dhaka',
+    ship_add2: 'Dhaka',
+    ship_city: 'Dhaka',
+    ship_state: 'Dhaka',
+    ship_postcode: 1000,
+    ship_country: 'Bangladesh',
+  };
 
-// const store_id = config.ssl.store_id as string;
-// const store_password = config.ssl.store_password as string;
-// const is_live = false; // true for live, false for sandbox
+  const sslcz = new SSLCommerzPayment(store_id, store_password, is_live);
 
-// // SSLCommerz init
-// const initializaPayment = async (total_amount: number, tran_id: string) => {
-//   const data = {
-//     total_amount,
-//     currency: 'BDT',
-//     tran_id, // Use unique tran_id for each API call
-//     success_url: `${config.ssl.validation_url}?tran_id=${tran_id}`,
-//     fail_url: config.ssl.fail_url as string,
-//     cancel_url: config.ssl.cancel_url as string,
-//     ipn_url: 'http://localhost:5000/api/v1/ssl/ipn',
-//     shipping_method: 'Courier',
-//     product_name: 'N/A.',
-//     product_category: 'N/A',
-//     product_profile: 'general',
-//     cus_name: 'N/A',
-//     cus_email: 'N/A',
-//     cus_add1: 'Dhaka',
-//     cus_add2: 'Dhaka',
-//     cus_city: 'Dhaka',
-//     cus_state: 'Dhaka',
-//     cus_postcode: '1000',
-//     cus_country: 'Bangladesh',
-//     cus_phone: '01711111111',
-//     cus_fax: '01711111111',
-//     ship_name: 'N/A',
-//     ship_add1: 'Dhaka',
-//     ship_add2: 'Dhaka',
-//     ship_city: 'Dhaka',
-//     ship_state: 'Dhaka',
-//     ship_postcode: 1000,
-//     ship_country: 'Bangladesh',
-//   };
+  try {
+    const apiResponse = await sslcz.init(data);
 
-//   const sslcz = new SSLCommerzPayment(store_id, store_password, is_live);
+    // Redirect the user to the payment gateway
+    const GatewayPageURL = apiResponse.GatewayPageURL;
 
-//   try {
-//     const apiResponse = await sslcz.init(data);
+    if (GatewayPageURL) {
+      return GatewayPageURL;
+    } else {
+      throw new StatusFullError({
+        name: 'InternalServerError',
+      message: 'Bad gateway',
+      status: httpStatus.INTERNAL_SERVER_ERROR
+      });
+    }
+  } catch (error) {
+    console.error(error); // Log the error for debugging
+    throw new StatusFullError({
+        name: 'InternalServerError',
+      message: 'An error occurred while processing payment!',
+      status: httpStatus.INTERNAL_SERVER_ERROR
+      });
+  }
+};
 
-//     // Redirect the user to the payment gateway
-//     const GatewayPageURL = apiResponse.GatewayPageURL;
+// validate Payment
+const validatePayment = async (
+  tran_id: string,
+  authUser: JwtPayload
+  //   rental: TRental,
+) => {
+  const sslcz = new SSLCommerzPayment(store_id, store_password, is_live);
 
-//     if (GatewayPageURL) {
-//       return GatewayPageURL;
-//     } else {
-//       throw new AppError(
-//         httpStatus.BAD_GATEWAY,
-//         'Failed to generate payment gateway URL!'
-//       );
-//     }
-//   } catch (error) {
-//     console.error(error); // Log the error for debugging
-//     throw new AppError(
-//       httpStatus.INTERNAL_SERVER_ERROR,
-//       'An error occurred while processing payment!'
-//     );
-//   }
-// };
+  const validationResponse = await sslcz.transactionQueryByTransactionId({
+    tran_id,
+  });
 
-// // validate Payment
-// const validatePayment = async (
-//   tran_id: string,
-//   authUser: JwtPayload
-//   //   rental: TRental,
-// ) => {
-//   const sslcz = new SSLCommerzPayment(store_id, store_password, is_live);
+  let data;
 
-//   const validationResponse = await sslcz.transactionQueryByTransactionId({
-//     tran_id,
-//   });
+  if (
+    validationResponse.element[0].status === 'VALID' ||
+    validationResponse.element[0].status === 'VALIDATED'
+  ) {
+    data = {
+      status: PaymentStatus.Paid,
+      gatewayResponse: validationResponse.element[0],
+    };
+  } else if (validationResponse.element[0].status === 'INVALID_TRANSACTION') {
+    data = {
+      status: PaymentStatus.Failed,
+      gatewayResponse: validationResponse.element[0],
+    };
+  } else {
+    data = {
+      status: PaymentStatus.Failed,
+      gatewayResponse: validationResponse.element[0],
+    };
+  }
 
-//   let data;
+  const updatedPayment = await prisma.payment.update({
+    where: {
+      transactionId: tran_id,
+      userEmail: authUser.email,
+    },
+    data: data,
+  });
 
-//   if (
-//     validationResponse.element[0].status === 'VALID' ||
-//     validationResponse.element[0].status === 'VALIDATED'
-//   ) {
-//     data = {
-//       status: PaymentStatus.Paid,
-//       gatewayResponse: validationResponse.element[0],
-//     };
-//   } else if (validationResponse.element[0].status === 'INVALID_TRANSACTION') {
-//     data = {
-//       status: PaymentStatus.Failed,
-//       gatewayResponse: validationResponse.element[0],
-//     };
-//   } else {
-//     data = {
-//       status: PaymentStatus.Failed,
-//       gatewayResponse: validationResponse.element[0],
-//     };
-//   }
+  if (!updatedPayment) {
+    throw new StatusFullError({
+      name: "NotModifiedError",
+      message: "Payment not updated!",
+      status: 400, 
+    });
+  }
+  
+  if (data.status === PaymentStatus.Failed) {
+    throw new StatusFullError({
+      name: "PaymentFailedError",
+      message: "Payment failed!",
+      status: 400, 
+    });
+  }
 
-//   const updatedPayment = await prisma.payment.update({
-//     where: {
-//       transactionId: tran_id,
-//       userEmail: authUser.email,
-//     },
-//     data: data,
-//   });
 
-//   if (!updatedPayment) {
-//     throw new AppError(httpStatus.NOT_MODIFIED, 'Payment not updated!');
-//   }
+  return updatedPayment;
+};
 
-//   if (data.status === PaymentStatus.Failed) {
-//     throw new AppError(httpStatus.EXPECTATION_FAILED, 'Payment failed!');
-//   }
-//   return updatedPayment;
-// };
-
-// export const sslService = {
-//   generateTransactionId,
-//   initializaPayment,
-//   validatePayment,
-// };
+export const sslService = {
+  generateTransactionId,
+  initializaPayment,
+  validatePayment,
+};

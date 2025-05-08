@@ -4,6 +4,9 @@ export type TErrorName =
   | "UnauthorizedError"
   | "ForbiddenError"
   | "InternalServerError"
-  | "DuplicateError";
+  | "DuplicateError"
+  | "NotModifiedError"
+  | "PaymentFailedError"; // ✅ added new error names
+
 
 export type TStatusCode = 200 | 400 | 401 | 403 | 404 | 500;

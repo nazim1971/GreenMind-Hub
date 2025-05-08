@@ -6,4 +6,6 @@ export type TPayment = {
   amount: number;
   status: PaymentStatus; // default: 'Pending',
   transactionId: string; // default: null,
+  // gatewayResponse?: Prisma.InputJsonValue; // default: null,
+  // createdAt?: Date;
 };
