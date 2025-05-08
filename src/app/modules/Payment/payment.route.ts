@@ -10,7 +10,7 @@ const router = Router();
 router.post(
   '/',
   auth(Role.MEMBER),
-  validateRequest(paymentValidation.createPayment),
+  validateRequest(PaymentValidation.createPayment),
   paymentController.createPayment
 );
 

@@ -50,6 +50,27 @@ class Config {
     if (!process.env.CLOUDINARY_API_SECRET) {
       throw new Error("CLOUDINARY_API_SECRET is required in .env file");
     }
+    if (!process.env.STORE_ID) {
+      throw new Error("STORE_ID is required in .env file");
+    }
+    if (!process.env.STORE_PASS) {
+      throw new Error("STORE_PASS is required in .env file");
+    }
+    if (!process.env.SUCCESS_URL) {
+      throw new Error("SUCCESS_URL is required in .env file");
+    }
+    if (!process.env.CANCEL_URL) {
+      throw new Error("CANCEL_URL is required in .env file");
+    }
+    if (!process.env.FAIL_URL) {
+      throw new Error("FAIL_URL is required in .env file");
+    }
+    if (!process.env.SSL_PAYMENT_API) {
+      throw new Error("SSL_PAYMENT_API is required in .env file");
+    }
+    if (!process.env.SSL_VALIDATIOIN_API) {
+      throw new Error("SSL_VALIDATIOIN_API is required in .env file");
+    }
   }
 
   // Getters for environment variables
@@ -97,6 +118,28 @@ class Config {
   }
   public get cloudApiS(): string {
     return String(process.env.CLOUDINARY_API_SECRET);
+  }
+
+  public get sslStoreId(): string {
+    return String(process.env.STORE_ID);
+  }
+  public get sslStorePassword(): string {
+    return String(process.env.STORE_PASS);
+  }
+  public get sslSuccessUrl(): string {
+    return String(process.env.SUCCESS_URL);
+  }
+  public get sslCancelUrl(): string {
+    return String(process.env.CANCEL_URL);
+  }
+  public get sslFailUrl(): string {
+    return String(process.env.FAIL_URL);
+  }
+  public get sslPaymentApi(): string {
+    return String(process.env.SSL_PAYMENT_API);
+  }
+  public get sslValidationApi(): string {
+    return String(process.env.SSL_VALIDATIOIN_API);
   }
 }
 

@@ -13,8 +13,8 @@ const generateTransactionId = (): string => {
   return `${timestamp}-${randomString}`;
 };
 
-const store_id = config.ssl.store_id as string;
-const store_password = config.ssl.store_password as string;
+const store_id = config.sslStoreId;
+const store_password = config.sslStorePassword;
 const is_live = false; // true for live, false for sandbox
 
 // SSLCommerz init
@@ -23,9 +23,9 @@ const initializaPayment = async (total_amount: number, tran_id: string) => {
     total_amount,
     currency: 'BDT',
     tran_id, // Use unique tran_id for each API call
-    success_url: `${config.ssl.validation_url}?tran_id=${tran_id}`,
-    fail_url: config.ssl.fail_url as string,
-    cancel_url: config.ssl.cancel_url as string,
+    success_url: `${config.sslValidationApi}?tran_id=${tran_id}`,
+    fail_url: config.sslFailUrl,
+    cancel_url: config.sslCancelUrl,
     ipn_url: 'http://localhost:5000/api/ssl/ipn',
     shipping_method: 'Courier',
     product_name: 'N/A.',
