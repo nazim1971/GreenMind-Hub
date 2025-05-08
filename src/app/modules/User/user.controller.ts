@@ -18,7 +18,7 @@ const createUser = catchAsync(async (req, res) => {
 //Get my profile
 const getMyProfile = catchAsync(async (req, res) => {
   const result = await userService.getMyProfile(req.user);
-
+    console.log(result);
   sendResponse(res, {
     success: true,
     statusCode: httpStatus.OK,

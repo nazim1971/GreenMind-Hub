@@ -1,3 +1,4 @@
+
 import prisma from "../../shared/prisma";
 import bcrypt from "bcrypt";
 import jwt, { JwtPayload } from "jsonwebtoken";
@@ -28,7 +29,8 @@ const loginUser = async (payload: { email: string; password: string }) => {
     {
       email: userData.email,
       role: userData.role,
-      name: userData.name
+      name: userData.name,
+      image: userData.image
     },
     config.jwtS,
     config.jwtExp
@@ -38,7 +40,8 @@ const loginUser = async (payload: { email: string; password: string }) => {
     {
       email: userData.email,
       role: userData.role,
-      name: userData.name
+      name: userData.name,
+      image: userData.image
     },
     config.refreshS,
     config.refreshExp
@@ -68,7 +71,8 @@ const refreshToken = async (token: string) => {
     {
       email: userData.email,
       role: userData.role,
-      name: userData.name
+      name: userData.name,
+      image: userData.image
     },
     config.jwtS,
     config.jwtExp
@@ -121,7 +125,8 @@ const forgotPassword = async (payload: { email: string }) => {
     {
       email: userData.email,
       role: userData.role,
-      name: userData.name
+      name: userData.name,
+      image: userData.image
     },
     config.resetPassS,
     config.resetPassExp
