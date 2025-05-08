@@ -1,0 +1,21 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const auth_1 = __importDefault(require("../../../middlewires/auth"));
+const client_1 = require("@prisma/client");
+const validateRequest_1 = __importDefault(require("../../../middlewires/validateRequest"));
+const idea_validation_1 = require("./idea.validation");
+const idea_controller_1 = require("./idea.controller");
+const photoUploader_1 = require("../../../utils/photoUploader");
+const IdeaRoute = (0, express_1.Router)();
+IdeaRoute.post("/draft", (0, auth_1.default)(client_1.Role.MEMBER, client_1.Role.ADMIN), (0, photoUploader_1.parseMultipleImagesWithData)(), (0, validateRequest_1.default)(idea_validation_1.IdeaValidation.draftAnIdea), idea_controller_1.IdeaController.draftAnIdea);
+IdeaRoute.post("/", (0, auth_1.default)(client_1.Role.MEMBER, client_1.Role.ADMIN), (0, photoUploader_1.parseMultipleImagesWithData)(), (0, validateRequest_1.default)(idea_validation_1.IdeaValidation.createAnIdea), idea_controller_1.IdeaController.createAnIdea);
+IdeaRoute.get("/me", (0, auth_1.default)(client_1.Role.MEMBER, client_1.Role.ADMIN), idea_controller_1.IdeaController.getOwnAllIdeas);
+IdeaRoute.get("/", idea_controller_1.IdeaController.getAllIdeas);
+IdeaRoute.get("/:id", idea_controller_1.IdeaController.getSingleIdea);
+IdeaRoute.put("/:id", (0, auth_1.default)(client_1.Role.MEMBER, client_1.Role.ADMIN), (0, photoUploader_1.parseMultipleImagesWithData)(), idea_controller_1.IdeaController.updateAIdea);
+IdeaRoute.delete("/:id", (0, auth_1.default)(client_1.Role.ADMIN, client_1.Role.MEMBER), idea_controller_1.IdeaController.deleteAIdea);
+exports.default = IdeaRoute;
