@@ -72,9 +72,7 @@ const createAnIdea = catchAsync(async (req, res) => {
 const getAllIdeas = catchAsync(async (req, res) => {
   const filters = pick(req.query, ideaFilterOptions);
   const options = pick(req.query, ideaPaginationOption);
-   const userRole = req.user?.role as 'ADMIN' | 'MEMBER' | undefined;
-
-  const result = await IdeaService.getAllIdeasFromDB(filters, options,userRole );
+  const result = await IdeaService.getAllIdeasFromDB(filters, options);
 
   sendResponse(res, {
     success: true,
@@ -232,6 +230,19 @@ const deleteAIdea = catchAsync(async (req, res) => {
   });
 });
 
+// getAllIdeas
+const getAllIdeasForAdmin = catchAsync(async (req, res) => {
+  const result = await IdeaService.getAllIdeasForAdmin(req.query);
+
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: 'All ideas fetched successfully!',
+    data: result.data,
+    meta: result.meta,
+  });
+});
+
 export const IdeaController = {
   draftAnIdea,
   createAnIdea,
@@ -240,4 +251,5 @@ export const IdeaController = {
   getSingleIdea,
   updateAIdea,
   deleteAIdea,
+  getAllIdeasForAdmin
 };

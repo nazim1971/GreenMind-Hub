@@ -39,4 +39,6 @@ IdeaRoute.put(
 
 IdeaRoute.delete("/:id", auth(Role.ADMIN,Role.MEMBER),IdeaController.deleteAIdea);
 
+IdeaRoute.get("/admin/all-ideas", auth(Role.ADMIN), IdeaController.getAllIdeasForAdmin)
+
 export default IdeaRoute;

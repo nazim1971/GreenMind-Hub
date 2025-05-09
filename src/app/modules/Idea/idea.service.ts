@@ -1,9 +1,11 @@
-import { Idea, IdeaStatus } from '@prisma/client';
+import { Idea, IdeaStatus, Prisma } from '@prisma/client';
 import { CustomPayload } from '../../interfaces';
 import { TIdeaFilterParams, TIdeaPayload } from './idea.interface';
 import prisma from '../../shared/prisma';
 import { PaginationHelper } from '../../builder/paginationBuilder';
 import { ideaFilters } from './idea.utils';
+import { ConditionsBuilder } from '../../builder/conditionsBuilder';
+import { ideaFields } from '../User/user.constant';
 
 
 // draftAnIdeaIntoDB
@@ -48,18 +50,15 @@ const createAnIdeaIntoDB = async (userData: CustomPayload, payload: TIdeaPayload
 // getAllIdeasFromDB
 const getAllIdeasFromDB = async (
   params?: TIdeaFilterParams,
-  options?: any,
-  userRole?: 'ADMIN' | 'MEMBER' | undefined
+  options?: any
 ) => {
   const { limit, page, skip, sortBy, sortOrder } =
     PaginationHelper.calculatePagination(options);
 
   const filterOptions = ideaFilters(params);
 
-   const statusFilter = userRole === 'ADMIN' ? {} : { status: IdeaStatus.APPROVED };
-
   const result = await prisma.idea.findMany({
-    where: { ...filterOptions, ...statusFilter },
+    where: { ...filterOptions, status: IdeaStatus.APPROVED },
     skip,
     take: limit,
     orderBy: sortBy && sortOrder ? { [sortBy]: sortOrder } : { createdAt: 'desc' },
@@ -73,7 +72,7 @@ const getAllIdeasFromDB = async (
   });
 
   const count = await prisma.idea.count({
-    where: { ...filterOptions},
+    where: { ...filterOptions, status: IdeaStatus.APPROVED },
   });
 
   return {
@@ -191,6 +190,62 @@ const deleteAnIdeaFromDB = async (id: string) => {
   });
 };
 
+// getAllIdeasFromDB
+const getAllIdeasForAdmin = async (query: Record<string, unknown>) => {
+  const { page, limit, skip, sortBy, sortOrder } =
+    PaginationHelper.calculatePagination(query);
+
+  let andConditions: Prisma.IdeaWhereInput[] = [];
+
+  // Dynamically build query filters
+  andConditions = ConditionsBuilder.prisma(query, andConditions, ideaFields);
+
+  // Dynamic status filter
+  let statusFilter: Prisma.IdeaWhereInput;
+  if (query?.status) {
+    statusFilter = {
+      status: query.status as IdeaStatus, // single status filter
+    };
+  } else {
+    statusFilter = {
+      status: {
+        in: [IdeaStatus.UNDER_REVIEW, IdeaStatus.APPROVED, IdeaStatus.REJECTED],
+      },
+    };
+  }
+
+  const whereConditions: Prisma.IdeaWhereInput =
+    andConditions.length > 0
+      ? {
+          AND: [...andConditions, statusFilter],
+        }
+      : statusFilter;
+
+  const result = await prisma.idea.findMany({
+    where: whereConditions,
+    skip,
+    take: limit,
+    orderBy: { [sortBy]: sortOrder },
+    include: {
+      category: true,
+      author: true,
+    },
+  });
+
+  const count = await prisma.idea.count({
+    where: whereConditions,
+  });
+  return {
+    meta: {
+      page,
+      limit,
+      total: count,
+      totalPage: Math.ceil(count / limit),
+    },
+    data: result,
+  };
+};
+
 // Exporting all functions as a flat service
 export const IdeaService = {
   draftAnIdeaIntoDB,
@@ -200,4 +255,5 @@ export const IdeaService = {
   getSingleIdeaFromDB,
   updateIdeaFromDB,
   deleteAnIdeaFromDB,
+  getAllIdeasForAdmin
 };
