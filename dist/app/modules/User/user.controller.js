@@ -66,7 +66,6 @@ const updateProfile = (0, catchAsync_1.catchAsync)((req, res) => __awaiter(void 
 }));
 // getAllUsers
 const getAllUsers = (0, catchAsync_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log('Headers:', req.headers);
     const result = yield user_service_1.userService.getAllUsersFromDB(req.query);
     (0, sendResponse_1.sendResponse)(res, {
         success: true,
@@ -90,6 +89,7 @@ const getSingleUser = (0, catchAsync_1.catchAsync)((req, res) => __awaiter(void 
 // updateUserActiveStatus
 const updateUserActiveStatus = (0, catchAsync_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
+    console.log({ id });
     const result = yield user_service_1.userService.updateUserActiveStatus(id, req.body);
     (0, sendResponse_1.sendResponse)(res, {
         success: true,

@@ -25,7 +25,6 @@ const auth = (...roles: Role[]) => {
     // checking if the given token is valid
     const decoded = jwtHelpers.verifyToken(token, config.jwtS) as CustomPayload;
     req.user = decoded;
-    console.log(decoded);
     const { email, role, iat } = decoded;
 
     // Check if user exists in the database

@@ -64,7 +64,7 @@ const updateProfile = catchAsync(async (req, res) => {
 
 // getAllUsers
 const getAllUsers = catchAsync(async (req, res) => {
-  console.log('Headers:', req.headers);
+
   const result = await userService.getAllUsersFromDB(req.query);
 
   sendResponse(res, {
@@ -93,6 +93,7 @@ const getSingleUser = catchAsync(async (req, res) => {
 // updateUserActiveStatus
 const updateUserActiveStatus = catchAsync(async (req, res) => {
   const { id } = req.params;
+  console.log({id});
   const result = await userService.updateUserActiveStatus(id, req.body);
 
   sendResponse(res, {

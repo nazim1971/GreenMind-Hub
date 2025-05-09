@@ -144,6 +144,7 @@ const getSingleUserFromDB = (id) => __awaiter(void 0, void 0, void 0, function* 
 });
 // updateUserActiveStatus
 const updateUserActiveStatus = (userId, payload) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log("UserId", { userId });
     const userData = yield prisma_1.default.user.findUniqueOrThrow({
         where: {
             id: userId,

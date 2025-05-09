@@ -34,7 +34,6 @@ const auth = (...roles) => {
         // checking if the given token is valid
         const decoded = jwtHelper_1.jwtHelpers.verifyToken(token, config_1.default.jwtS);
         req.user = decoded;
-        console.log(decoded);
         const { email, role, iat } = decoded;
         // Check if user exists in the database
         const user = yield prisma_1.default.user.findUnique({

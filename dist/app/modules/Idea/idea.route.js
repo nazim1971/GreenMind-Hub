@@ -18,4 +18,5 @@ IdeaRoute.get("/", idea_controller_1.IdeaController.getAllIdeas);
 IdeaRoute.get("/:id", idea_controller_1.IdeaController.getSingleIdea);
 IdeaRoute.put("/:id", (0, auth_1.default)(client_1.Role.MEMBER, client_1.Role.ADMIN), (0, photoUploader_1.parseMultipleImagesWithData)(), idea_controller_1.IdeaController.updateAIdea);
 IdeaRoute.delete("/:id", (0, auth_1.default)(client_1.Role.ADMIN, client_1.Role.MEMBER), idea_controller_1.IdeaController.deleteAIdea);
+IdeaRoute.get("/admin/all-ideas", (0, auth_1.default)(client_1.Role.ADMIN), idea_controller_1.IdeaController.getAllIdeasForAdmin);
 exports.default = IdeaRoute;

@@ -139,6 +139,8 @@ const updateUserActiveStatus = async (
   userId: string,
   payload: { isActive: boolean; role: Role }
 ) => {
+
+  console.log("UserId", {userId});
   const userData = await prisma.user.findUniqueOrThrow({
     where: {
       id: userId,

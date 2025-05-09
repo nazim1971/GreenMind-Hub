@@ -17,6 +17,8 @@ const client_1 = require("@prisma/client");
 const prisma_1 = __importDefault(require("../../shared/prisma"));
 const paginationBuilder_1 = require("../../builder/paginationBuilder");
 const idea_utils_1 = require("./idea.utils");
+const conditionsBuilder_1 = require("../../builder/conditionsBuilder");
+const user_constant_1 = require("../User/user.constant");
 // draftAnIdeaIntoDB
 const draftAnIdeaIntoDB = (userData, payload) => __awaiter(void 0, void 0, void 0, function* () {
     payload.price = payload.price ? Number(payload.price) : 0;
@@ -55,12 +57,11 @@ const createAnIdeaIntoDB = (userData, payload) => __awaiter(void 0, void 0, void
     }
 });
 // getAllIdeasFromDB
-const getAllIdeasFromDB = (params, options, userRole) => __awaiter(void 0, void 0, void 0, function* () {
+const getAllIdeasFromDB = (params, options) => __awaiter(void 0, void 0, void 0, function* () {
     const { limit, page, skip, sortBy, sortOrder } = paginationBuilder_1.PaginationHelper.calculatePagination(options);
     const filterOptions = (0, idea_utils_1.ideaFilters)(params);
-    const statusFilter = userRole === 'ADMIN' ? {} : { status: client_1.IdeaStatus.APPROVED };
     const result = yield prisma_1.default.idea.findMany({
-        where: Object.assign(Object.assign({}, filterOptions), statusFilter),
+        where: Object.assign(Object.assign({}, filterOptions), { status: client_1.IdeaStatus.APPROVED }),
         skip,
         take: limit,
         orderBy: sortBy && sortOrder ? { [sortBy]: sortOrder } : { createdAt: 'desc' },
@@ -73,7 +74,7 @@ const getAllIdeasFromDB = (params, options, userRole) => __awaiter(void 0, void 
         },
     });
     const count = yield prisma_1.default.idea.count({
-        where: Object.assign({}, filterOptions),
+        where: Object.assign(Object.assign({}, filterOptions), { status: client_1.IdeaStatus.APPROVED }),
     });
     return {
         meta: {
@@ -173,6 +174,54 @@ const deleteAnIdeaFromDB = (id) => __awaiter(void 0, void 0, void 0, function* (
         data: { isDeleted: true },
     });
 });
+// getAllIdeasFromDB
+const getAllIdeasForAdmin = (query) => __awaiter(void 0, void 0, void 0, function* () {
+    const { page, limit, skip, sortBy, sortOrder } = paginationBuilder_1.PaginationHelper.calculatePagination(query);
+    let andConditions = [];
+    // Dynamically build query filters
+    andConditions = conditionsBuilder_1.ConditionsBuilder.prisma(query, andConditions, user_constant_1.ideaFields);
+    // Dynamic status filter
+    let statusFilter;
+    if (query === null || query === void 0 ? void 0 : query.status) {
+        statusFilter = {
+            status: query.status, // single status filter
+        };
+    }
+    else {
+        statusFilter = {
+            status: {
+                in: [client_1.IdeaStatus.UNDER_REVIEW, client_1.IdeaStatus.APPROVED, client_1.IdeaStatus.REJECTED],
+            },
+        };
+    }
+    const whereConditions = andConditions.length > 0
+        ? {
+            AND: [...andConditions, statusFilter],
+        }
+        : statusFilter;
+    const result = yield prisma_1.default.idea.findMany({
+        where: whereConditions,
+        skip,
+        take: limit,
+        orderBy: { [sortBy]: sortOrder },
+        include: {
+            category: true,
+            author: true,
+        },
+    });
+    const count = yield prisma_1.default.idea.count({
+        where: whereConditions,
+    });
+    return {
+        meta: {
+            page,
+            limit,
+            total: count,
+            totalPage: Math.ceil(count / limit),
+        },
+        data: result,
+    };
+});
 // Exporting all functions as a flat service
 exports.IdeaService = {
     draftAnIdeaIntoDB,
@@ -182,4 +231,5 @@ exports.IdeaService = {
     getSingleIdeaFromDB,
     updateIdeaFromDB,
     deleteAnIdeaFromDB,
+    getAllIdeasForAdmin
 };
