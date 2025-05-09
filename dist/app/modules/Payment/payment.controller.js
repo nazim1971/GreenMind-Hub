@@ -24,17 +24,6 @@ const createPayment = (0, catchAsync_1.catchAsync)((req, res) => __awaiter(void 
         data: result,
     });
 }));
-// get All Payments (admin)
-// const getAllPayments = async (req, res) => {
-//   const result = await paymentService.getAllPaymentsFromDB(req.query);
-//   sendResponse(res, {
-//     success: true,
-//     statusCode: httpStatus.OK,
-//     message: 'Payments retrived succesfully!',
-//     data: result.data,
-//     meta: result.meta,
-//   });
-// };
 const getAllPayments = (0, catchAsync_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield payment_service_1.paymentService.getAllPaymentsFromDB(req.query);
     (0, sendResponse_1.sendResponse)(res, {

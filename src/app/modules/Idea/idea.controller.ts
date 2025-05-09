@@ -72,7 +72,9 @@ const createAnIdea = catchAsync(async (req, res) => {
 const getAllIdeas = catchAsync(async (req, res) => {
   const filters = pick(req.query, ideaFilterOptions);
   const options = pick(req.query, ideaPaginationOption);
-  const result = await IdeaService.getAllIdeasFromDB(filters, options);
+   const userRole = req.user?.role as 'ADMIN' | 'MEMBER' | undefined;
+
+  const result = await IdeaService.getAllIdeasFromDB(filters, options,userRole );
 
   sendResponse(res, {
     success: true,

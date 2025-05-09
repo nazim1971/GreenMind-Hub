@@ -71,9 +71,11 @@ const createAnIdea = (0, catchAsync_1.catchAsync)((req, res) => __awaiter(void 0
 }));
 // getAllIdeas
 const getAllIdeas = (0, catchAsync_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
     const filters = (0, pick_1.default)(req.query, idea_constants_1.ideaFilterOptions);
     const options = (0, pick_1.default)(req.query, idea_constants_1.ideaPaginationOption);
-    const result = yield idea_service_1.IdeaService.getAllIdeasFromDB(filters, options);
+    const userRole = (_a = req.user) === null || _a === void 0 ? void 0 : _a.role;
+    const result = yield idea_service_1.IdeaService.getAllIdeasFromDB(filters, options, userRole);
     (0, sendResponse_1.sendResponse)(res, {
         success: true,
         statusCode: httpStatus_1.httpStatus.OK,

@@ -55,11 +55,12 @@ const createAnIdeaIntoDB = (userData, payload) => __awaiter(void 0, void 0, void
     }
 });
 // getAllIdeasFromDB
-const getAllIdeasFromDB = (params, options) => __awaiter(void 0, void 0, void 0, function* () {
+const getAllIdeasFromDB = (params, options, userRole) => __awaiter(void 0, void 0, void 0, function* () {
     const { limit, page, skip, sortBy, sortOrder } = paginationBuilder_1.PaginationHelper.calculatePagination(options);
     const filterOptions = (0, idea_utils_1.ideaFilters)(params);
+    const statusFilter = userRole === 'ADMIN' ? {} : { status: client_1.IdeaStatus.APPROVED };
     const result = yield prisma_1.default.idea.findMany({
-        where: Object.assign(Object.assign({}, filterOptions), { status: client_1.IdeaStatus.APPROVED }),
+        where: Object.assign(Object.assign({}, filterOptions), statusFilter),
         skip,
         take: limit,
         orderBy: sortBy && sortOrder ? { [sortBy]: sortOrder } : { createdAt: 'desc' },
@@ -72,7 +73,7 @@ const getAllIdeasFromDB = (params, options) => __awaiter(void 0, void 0, void 0,
         },
     });
     const count = yield prisma_1.default.idea.count({
-        where: Object.assign(Object.assign({}, filterOptions), { status: client_1.IdeaStatus.APPROVED }),
+        where: Object.assign({}, filterOptions),
     });
     return {
         meta: {
