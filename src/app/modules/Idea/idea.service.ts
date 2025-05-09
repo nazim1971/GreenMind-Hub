@@ -48,15 +48,18 @@ const createAnIdeaIntoDB = async (userData: CustomPayload, payload: TIdeaPayload
 // getAllIdeasFromDB
 const getAllIdeasFromDB = async (
   params?: TIdeaFilterParams,
-  options?: any
+  options?: any,
+  userRole?: 'ADMIN' | 'MEMBER' | undefined
 ) => {
   const { limit, page, skip, sortBy, sortOrder } =
     PaginationHelper.calculatePagination(options);
 
   const filterOptions = ideaFilters(params);
 
+   const statusFilter = userRole === 'ADMIN' ? {} : { status: IdeaStatus.APPROVED };
+
   const result = await prisma.idea.findMany({
-    where: { ...filterOptions, status: IdeaStatus.APPROVED },
+    where: { ...filterOptions, ...statusFilter },
     skip,
     take: limit,
     orderBy: sortBy && sortOrder ? { [sortBy]: sortOrder } : { createdAt: 'desc' },
@@ -70,7 +73,7 @@ const getAllIdeasFromDB = async (
   });
 
   const count = await prisma.idea.count({
-    where: { ...filterOptions, status: IdeaStatus.APPROVED },
+    where: { ...filterOptions},
   });
 
   return {

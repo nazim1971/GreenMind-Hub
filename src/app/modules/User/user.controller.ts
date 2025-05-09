@@ -64,6 +64,7 @@ const updateProfile = catchAsync(async (req, res) => {
 
 // getAllUsers
 const getAllUsers = catchAsync(async (req, res) => {
+  console.log('Headers:', req.headers);
   const result = await userService.getAllUsersFromDB(req.query);
 
   sendResponse(res, {

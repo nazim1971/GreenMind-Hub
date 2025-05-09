@@ -16,18 +16,7 @@ const createPayment = catchAsync(async (req, res) => {
   });
 });
 
-// get All Payments (admin)
-// const getAllPayments = async (req, res) => {
-//   const result = await paymentService.getAllPaymentsFromDB(req.query);
 
-//   sendResponse(res, {
-//     success: true,
-//     statusCode: httpStatus.OK,
-//     message: 'Payments retrived succesfully!',
-//     data: result.data,
-//     meta: result.meta,
-//   });
-// };
 
 const getAllPayments = catchAsync(async (req, res) => {
     const result = await paymentService.getAllPaymentsFromDB(req.query);
