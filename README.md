@@ -1,8 +1,12 @@
 
 # 🌱 GreenMind-Hub Server
 
-🔗 **Live Server**: [https://greenmind-server.vercel.app](https://greenmind-server.vercel.app)  
-🔗 **Live Client**: [https://greenmind-client.vercel.app](https://greenmind-client.vercel.app)
+## 🔗 Live Links
+
+- 🚀 **Client**: [GreenMind-Hub Live Client](https://greenmind-hub.vercel.app/)
+- 🖥️ **Server**: [GreenMind-Hub Live Server](https://greenmind-server.vercel.app/)
+
+---
 
 A RESTful API for GreenMind-Hub — a Next.js-powered community platform where users share and vote on sustainable ideas. This backend service handles authentication, idea moderation, commenting, voting, and secure payments.
 
