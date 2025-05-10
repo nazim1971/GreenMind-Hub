@@ -106,7 +106,6 @@ A RESTful API for GreenMind-Hub — a Next.js-powered community platform where u
    pnpm dev
    ```
 
----
 
 ### 🔐 Auth API Endpoints
 
@@ -118,7 +117,6 @@ A RESTful API for GreenMind-Hub — a Next.js-powered community platform where u
 | POST   | `/api/auth/refresh-token`   | Refresh access token     |
 | PATCH  | `/api/auth/change-password` | Change user password     |
 
----
 
 ### 👤 User API
 
