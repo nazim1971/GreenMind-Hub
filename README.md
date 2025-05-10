@@ -1,57 +1,60 @@
 
+---
+
 # 🌱 GreenMind-Hub Server
 
 ## 🔗 Live Links
 
-- 🚀 **Client**: [GreenMind-Hub Live Client](https://greenmind-hub.vercel.app/)
-- 🖥️ **Server**: [GreenMind-Hub Live Server](https://greenmind-server.vercel.app/)
+* 🚀 **Client**: [greenmind-hub.vercel.app](https://greenmind-hub.vercel.app/)
+* 🖥️ **Server**: [greenmind-server.vercel.app](https://greenmind-server.vercel.app/)
 
 ---
 
-A RESTful API for GreenMind-Hub — a Next.js-powered community platform where users share and vote on sustainable ideas. This backend service handles authentication, idea moderation, commenting, voting, and secure payments.
+A RESTful **API server** for **GreenMind-Hub**, a community platform where users share, vote on, and manage eco-friendly ideas. Built with **Next.js (client)** and **Express.js (server)**, this backend handles authentication, moderation, commenting, voting, and secure payments.
 
 ---
 
-### 🛠️ Tech Stack
+## 🛠️ Tech Stack
 
-- **Runtime:** Node.js
-- **Framework:** Express.js
-- **Database:** PostgreSQL
-- **ORM:** Prisma
-- **Authentication:** JWT, bcrypt
-- **Validation:** Zod
-- **Uploads:** Multer + Cloudinary
-- **Payments:** SSLCommerz
-- **Mail:** Nodemailer
-
----
-
-### 🌟 Core Features
-
-- **JWT Authentication:** Secure login for members and admins
-- **CRUD Operations:** Manage ideas, comments, votes
-- **Admin Endpoints:** Moderate ideas with feedback
-- **Image Uploads:** Cloudinary support for idea images
-- **Email System:** Password reset via secure email link
-- **Payment Integration:** Handle member payments with SSLCommerz
+* **Runtime:** Node.js
+* **Framework:** Express.js
+* **Database:** PostgreSQL
+* **ORM:** Prisma
+* **Authentication:** JWT, bcrypt
+* **Validation:** Zod
+* **Uploads:** Multer + Cloudinary
+* **Payments:** SSLCommerz
+* **Email Service:** Nodemailer
 
 ---
 
-### ⚙️ Prerequisites
+## 🌟 Core Features
 
-- **Node.js:** ≥18.x  
-- **PostgreSQL:** ≥16.x
+* 🔐 **JWT Authentication** for members and admins
+* 📝 **CRUD operations** for ideas, comments, votes
+* 🛡️ **Admin tools** for content moderation
+* 🖼️ **Cloudinary image uploads**
+* 📧 **Secure password reset via email**
+* 💳 **SSLCommerz payment integration**
 
 ---
 
-### 🚀 Getting Started (Local Development)
+## ⚙️ Prerequisites
 
-1. Clone the server repository:
+* **Node.js:** ≥ 18.x
+* **PostgreSQL:** ≥ 16.x
+
+---
+
+## 🚀 Getting Started (Local Development)
+
+1. **Clone the repository:**
+
    ```bash
    git clone https://github.com/nazim1971/GreenMind-Hub.git
-````
+   ```
 
-2. Install dependencies:
+2. **Install dependencies:**
 
    ```bash
    pnpm install
@@ -59,7 +62,9 @@ A RESTful API for GreenMind-Hub — a Next.js-powered community platform where u
    npm install
    ```
 
-3. Create a `.env` file in the root and add the following:
+3. **Configure environment variables:**
+
+   Create a `.env` file in the root with the following:
 
    ```env
    NODE_ENV=development
@@ -94,34 +99,38 @@ A RESTful API for GreenMind-Hub — a Next.js-powered community platform where u
    SSL_VALIDATIOIN_API=https://sandbox.sslcommerz.com/validator/api/validationserverAPI.php
    ```
 
-4. Run Prisma migrations:
+4. **Run Prisma migrations:**
 
    ```bash
    npx prisma migrate dev
    ```
 
-5. Start the server:
+5. **Start the development server:**
 
    ```bash
    pnpm dev
    ```
 
+---
 
-### 🔐 Auth API Endpoints
+## 📡 API Documentation
 
-| Method | Endpoint                    | Description              |
-| ------ | --------------------------- | ------------------------ |
-| POST   | `/api/auth/login`           | Login user               |
-| POST   | `/api/auth/send-email`      | Send reset password link |
-| POST   | `/api/auth/reset-password`  | Reset password           |
-| POST   | `/api/auth/refresh-token`   | Refresh access token     |
-| PATCH  | `/api/auth/change-password` | Change user password     |
+### 🔐 Auth API
 
+| Method | API Endpoint                | Description               |
+| ------ | --------------------------- | ------------------------- |
+| POST   | `/api/auth/login`           | Login user                |
+| POST   | `/api/auth/send-email`      | Send password reset email |
+| POST   | `/api/auth/reset-password`  | Reset password            |
+| POST   | `/api/auth/refresh-token`   | Refresh access token      |
+| PATCH  | `/api/auth/change-password` | Change password           |
+
+---
 
 ### 👤 User API
 
 ```ts
-path: '/api/user'
+GET /api/user           // Get current user profile
 ```
 
 ---
@@ -129,8 +138,8 @@ path: '/api/user'
 ### 📂 Category API
 
 ```ts
-POST   /api/category/        // Admin: Create category  
-GET    /api/category/        // Get all categories
+POST /api/category      // Admin: Create category
+GET  /api/category      // Get all categories
 ```
 
 ---
@@ -138,14 +147,14 @@ GET    /api/category/        // Get all categories
 ### 💡 Idea API
 
 ```ts
-POST   /api/idea/draft                   // Draft idea with image  
-POST   /api/idea/                        // Submit idea  
-GET    /api/idea/me                      // Get own ideas  
-GET    /api/idea/                        // Get all ideas  
-GET    /api/idea/:id                     // Get idea by ID  
-PUT    /api/idea/:id                     // Update idea  
-DELETE /api/idea/:id                     // Delete idea  
-GET    /api/idea/admin/all-ideas         // Admin: Review all ideas
+POST   /api/idea/draft              // Save draft with image
+POST   /api/idea/                   // Submit idea
+GET    /api/idea/me                 // Get own ideas
+GET    /api/idea/                   // Get all ideas
+GET    /api/idea/:id                // Get idea by ID
+PUT    /api/idea/:id                // Update idea
+DELETE /api/idea/:id                // Delete idea
+GET    /api/idea/admin/all-ideas    // Admin: View all ideas
 ```
 
 ---
@@ -153,9 +162,9 @@ GET    /api/idea/admin/all-ideas         // Admin: Review all ideas
 ### 💬 Comment API
 
 ```ts
-POST   /api/comment/                     // Add comment  
-GET    /api/comment/:id                  // Get comments by idea ID  
-DELETE /api/comment/:id                  // Delete comment
+POST   /api/comment/        // Add comment
+GET    /api/comment/:id     // Get comments for an idea
+DELETE /api/comment/:id     // Delete comment
 ```
 
 ---
@@ -163,11 +172,11 @@ DELETE /api/comment/:id                  // Delete comment
 ### 🗳️ Vote API
 
 ```ts
-POST    /api/vote/                       // Add/Update vote  
-DELETE  /api/vote/:ideaId                // Remove vote  
-GET     /api/vote/stats/:ideaId          // Get vote stats  
-GET     /api/vote/:ideaId                // Get user's vote  
-GET     /api/vote/ideas/by-votes         // Get ideas sorted by vote
+POST   /api/vote/                    // Add or update vote
+DELETE /api/vote/:ideaId             // Remove vote
+GET    /api/vote/stats/:ideaId       // Get vote stats
+GET    /api/vote/:ideaId             // Get user's vote on idea
+GET    /api/vote/ideas/by-votes      // Get top-voted ideas
 ```
 
 ---
@@ -175,18 +184,20 @@ GET     /api/vote/ideas/by-votes         // Get ideas sorted by vote
 ### 💳 Payment API
 
 ```ts
-POST    /api/payments/                   // Create payment  
-GET     /api/payments/                   // Admin: View all payments  
-GET     /api/payments/member             // Member: View own payments  
-GET     /api/payments/details/:paymentId // Get payment details  
-PATCH   /api/payments/validate           // Validate payment
+POST   /api/payments/                    // Initiate payment
+GET    /api/payments/                    // Admin: View all payments
+GET    /api/payments/member              // Member: View own payments
+GET    /api/payments/details/:paymentId  // View payment details
+PATCH  /api/payments/validate            // Validate payment
 ```
 
 ---
 
-### 👨‍💻 Developer
+## 👨‍💻 Developer
 
 **Md. Nazim Uddin**
 🔗 [GitHub Profile](https://github.com/nazim1971)
-📧 Email: [nazimmuddin10@gmail.com](mailto:nazimmuddin10@gmail.com)
+📧 [nazimmuddin10@gmail.com](mailto:nazimmuddin10@gmail.com)
+
+---
 
