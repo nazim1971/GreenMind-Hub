@@ -24,12 +24,6 @@ router.get(
   paymentController.getPaymentDetails
 );
 
-// router.patch(
-//   '/:paymentId/status',
-//   auth(Role.ADMIN),
-//   validateRequest(PaymentValidation.changePaymentStatus),
-//   PaymentController.changePaymentStatus
-// );
 
 router.patch(
   '/validate',
