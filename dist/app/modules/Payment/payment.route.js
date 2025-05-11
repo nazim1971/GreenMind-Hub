@@ -15,11 +15,5 @@ router.post('/', (0, auth_1.default)(client_1.Role.MEMBER), (0, validateRequest_
 router.get('/', (0, auth_1.default)(client_1.Role.ADMIN), payment_controller_1.paymentController.getAllPayments);
 router.get('/member', (0, auth_1.default)(client_1.Role.MEMBER), payment_controller_1.paymentController.getMemberPayments);
 router.get('/details/:paymentId', (0, auth_1.default)(client_1.Role.MEMBER, client_1.Role.ADMIN), payment_controller_1.paymentController.getPaymentDetails);
-// router.patch(
-//   '/:paymentId/status',
-//   auth(Role.ADMIN),
-//   validateRequest(PaymentValidation.changePaymentStatus),
-//   PaymentController.changePaymentStatus
-// );
 router.patch('/validate', (0, auth_1.default)(client_1.Role.MEMBER, client_1.Role.ADMIN), (0, validateRequest_1.default)(payment_validation_1.PaymentValidation.validatePayment), payment_controller_1.paymentController.validatePayment);
 exports.paymentRoutes = router;
