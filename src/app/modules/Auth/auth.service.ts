@@ -8,14 +8,14 @@ import emailSender from "../../../helper/emailSender";
 import { StatusFullError } from '../../error/StatusFullError';
 
 const loginUser = async (payload: { email: string; password: string }) => {
-  console.log("User login");
+  
   const userData = await prisma.user.findUniqueOrThrow({
     where: {
       email: payload.email,
       isActive: true
     },
   });
-  console.log({ payload });
+ 
 
   const isPasswordCorrect: boolean = await bcrypt.compare(
     payload.password,

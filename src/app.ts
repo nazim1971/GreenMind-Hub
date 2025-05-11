@@ -6,6 +6,7 @@ import { globalErrorHandler } from './middlewires/globalErrorHandler';
 import { notFoundError } from './middlewires/notFoundError';
 import cookieParser from 'cookie-parser';
 import os from 'os'
+import prisma from './app/shared/prisma';
 
 const app: Application = express();
 app.use(cors({
@@ -44,7 +45,7 @@ app.get("/", (req: Request, res: Response) => {
       developerContact,
     });
   });
-  
+
   // Helper function to format uptime
   function formatUptime(seconds: number): string {
     const hours = Math.floor(seconds / 3600);
